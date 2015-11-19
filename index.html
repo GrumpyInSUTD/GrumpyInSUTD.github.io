@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+       <html>
+       <head>
+         <title>Whac-A-Mole</title>
+       </head>
+       <body>
+       <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+       <canvas id="canvas" width="405" height="405"></canvas>
+       <Image id="pic" src="http://www.clker.com/cliparts/5/9/2/1/119498479391699263wooden_mallot_benji_park_.svg.hi.png"></image>
+       <input id="button1" type="button" value="EASY"/>
+       <input id="button2" type="button" value="MIDIUM"/>
+       <input id="button3" type="button" value="HARD"/>
+<script>
+
+var degreeofdifficulty,intervalId
+
+var gameOver=function(){
+  if (score>24){
+    ctx.font="20px Courier"
+    ctx.fillStyle="#977COO"
+    ctx.textAlign="center"
+    ctx.textBaseline="middle"
+    ctx.fillText("Your score is "+score,width/2,height*3/5)
+    ctx.fillText("WOW! You must be a expert! ",width/2,height*1/5)
+    ctx.fillText("  High  Score!",width/2,height*2/5)
+  }
+  else if (score>15 && score<25){
+    ctx.font="20px Courier"
+    ctx.fillStyle="#977COO"
+    ctx.textAlign="center"
+    ctx.textBaseline="up"
+    ctx.fillText("It's  OK!",width/2,height/5)
+    ctx.fillText("Your score is "+score,width/2,height*2/5)
+    ctx.fillText("Good Job",width/2,height*3/5)
+  }
+  else if (score<16){
+    ctx.font="20px Courier"
+    ctx.fillStyle="#977COO"
+    ctx.textAlign="center"
+    ctx.textBaseline="up"
+    ctx.fillText("Come on! Try again.",width/2,height/5)
+    ctx.fillText("Your score is only "+score,width/2,height*3/5)
+    ctx.fillText("Not so good:(",width/2,height*2/5)
+  }
+}
+
+var Start=function(){
+var intervalId=setInterval(function(){var mouse = new Mouse;
+   ctx.clearRect(0,0,width,height);
+   drawBorder();
+   mouse.drawMouse();
+   drawScore();
+   drawTimeLeft();
+   time--;
+   while(time===-1){clearInterval(intervalId);break}
+   },degreeofdifficulty)
+}
+//Start
+
+$("html").mousemove(function(event){
+  $("#pic").offset({
+    left:event.pageX+1,
+    top:event.pageY-30
+  })
+})
+
+$(pic).css({
+  width:"7%",
+  height:"auto"
+})
+
+//Set up canvas
+var canvas=document.getElementById("canvas")
+var ctx=canvas.getContext("2d")
+
+//Get the width and height from the canvas element
+var width=canvas.width;
+var height=canvas.height
+
+//Work out the width and height in blocks
+var blockSize=100;
+var widthInBlocks=width/blockSize;
+var heightInBlocks=height/blockSize
+
+//Set score to 0
+var score=0
+
+//Set time to 60 seconds
+var time=30
+
+//
+var clicktime
+
+//Draw the border
+var drawBorder=function(){
+ctx.fillStyle="#BB5E00"
+ctx.fillRect(0,0,width,5)
+ctx.fillRect(0,height-5,width,5)
+ctx.fillRect(0,0,5,height)
+ctx.fillRect(width-5,0,10,height)
+ctx.fillRect(100,0,5,height)
+ctx.fillRect(200,0,5,height)
+ctx.fillRect(300,0,5,height)
+ctx.fillRect(0,100,width,5)
+ctx.fillRect(0,200,width,5)
+ctx.fillRect(0,300,width,5)
+}
+
+var drawBackGround=function(){
+  imge2=new Image()
+  imge2.src="http://img3.redocn.com/20120314/Redocn_2012031405160834.jpg"
+  imge2.onload=function(){
+    ctx.drawImage(imge2,5,5,395,395)
+  }
+}
+
+//Draw the score in the top-right corner
+var drawScore=function(){
+ctx.font="10px Courier"
+ctx.fillStyle="#EA7500"
+ctx.textAlign="left"
+ctx.textBaseline="top"
+ctx.fillText("Score: "+score,5,5)
+}
+
+//Draw the time left
+var drawTimeLeft=function(){
+ctx.font="10px Courier"
+ctx.fillStyle="#EA7500"
+ctx.textAlign="left"
+ctx.textBaseline="top"
+ctx.fillText("Time Left: "+time,300,380)
+if (time===0){gameOver()}
+}
+
+//Block constructor
+var Block=function(col,row){
+this.col=col;
+this.row=row
+}
+
+var a,b
+var x,y
+
+$("canvas").mousedown(function(event){
+a=event.pageX;
+b=event.pageY;
+if (a>x+5 && a<x+100 && b>y+5 && b<y+100){
+score++;
+var canvas=document.getElementById("canvas")
+ctx=canvas.getContext('2d')
+img2=new Image()
+img2.src="http://img.25pp.com/uploadfile/youxi/images/2014/0215/20140215020318492.jpg"
+  ctx.drawImage(img2,x+5,y+5,95,95);console.log("hello")
+  x=-100;y=-100;
+}a=0;b=0
+})
+
+Block.prototype.drawSquare=function(){
+   console.log(x+5,y+5)
+   x=this.col*100
+   y=this.row*100
+   var canvas=document.getElementById("canvas"),
+   ctx=canvas.getContext('2d')
+   img=new Image()
+   img.src="http://www.wpclipart.com/cartoon/animals/mouse_rat/rodent/mole_cartoon_T.png"
+   img.onload=function(){
+      ctx.drawImage(img,x+5,y+20,95,80)
+   }
+   var elem = document.getElementById("canvas"),
+     elemLeft = elem.offsetLeft;
+     elemTop = elem.offsetTop;
+    console.log(a+"and"+b);
+}
+
+//Mouse constructor
+var Mouse=function(){
+   var randomrow=Math.floor(Math.random()*4)
+   var randomcol=Math.floor(Math.random()*4)
+   this.position=
+   new Block(randomrow,randomcol)
+}
+
+//draw Mouse
+Mouse.prototype.drawMouse=function(){
+  this.position.drawSquare();
+}
+
+document.getElementById("button1").onclick=function(){
+  degreeofdifficulty=1000;Start()
+}
+document.getElementById("button2").onclick=function(){
+  degreeofdifficulty=750;Start()
+}
+document.getElementById("button3").onclick=function(){
+  degreeofdifficulty=600;Start()
+}
+
+</script>
+<div style="left: 120px; position:absolute; top:420px;font-size:30px;color:#844200;font-weight:bold;font-family:STHupo">Whac-A-Mole</div>
+<div style="left: 480px; position:absolute; top:320px;font-size:30px;color:#844200;font-weight:bold;font-family:STHupo">Choose degree of difficulty</div>
+</body>
+</html>
